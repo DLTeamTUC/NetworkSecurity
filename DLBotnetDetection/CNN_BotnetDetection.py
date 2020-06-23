@@ -63,8 +63,8 @@ train['TotPkts'] = le.fit_transform(train['TotPkts'])
 train['TotBytes'] = le.fit_transform(train['TotBytes'])
 train['SrcBytes'] = le.fit_transform(train['SrcBytes'])
 train['Label'] = le.fit_transform(train['Label'])
-train['AvgByte'] = le.fit_transform(train['AvgByte'])
-train['AvgPacket'] = le.fit_transform(train['AvgPacket'])
+train['AvgByte'] = le.fit_transform(train['AvgByte']) #We add this additional feature to the CTU-13 dataset
+train['AvgPacket'] = le.fit_transform(train['AvgPacket']) #We add this additional feature to the CTU-13 dataset
 
 xtrain_Val = train.iloc[:,0:17].values
 Ytrain = train.iloc[:,17].values
@@ -103,22 +103,24 @@ test['State'] = le.fit_transform(test['State'])
 test['sTos'] = le.fit_transform(test['sTos'])
 test['dTos'] = le.fit_transform(test['dTos'])
 test['TotPkts'] = le.fit_transform(test['TotPkts'])
-test['TotBytes'] = le.fit_transform(test['TotBytes'])
-test['SrcBytes'] = le.fit_transform(test['SrcBytes'])
+test['TotBytes'] = le.fit_transform(test['TotBytes']) 
+test['SrcBytes'] = le.fit_transform(test['SrcBytes']) 
 test['Label'] = le.fit_transform(test['Label'])
+test['AvgByte'] = le.fit_transform(test['AvgByte']) #We add this additional feature to the CTU-13 dataset
+test['AvgPacket'] = le.fit_transform(test['AvgPacket']) #We add this additional feature to the CTU-13 dataset
 
-xtest_Val = test.iloc[:,0:15].values
-Ytest = test.iloc[:,15].values
+xtest_Val = test.iloc[:,0:17].values
+Ytest = test.iloc[:,17].values
 
 scaler = MinMaxScaler(feature_range=(0, 1))
 Xtest = scaler.fit_transform(xtest_Val)
 
-Xtrain = Xtrain.reshape((Xtrain.shape[0], 15, 1))
-Xtest = Xtest.reshape((Xtest.shape[0], 15, 1))   #Input data shape: (samples, timesteps, features)
+Xtrain = Xtrain.reshape((Xtrain.shape[0], 17, 1))
+Xtest = Xtest.reshape((Xtest.shape[0], 17, 1))   #Input data shape: (samples, timesteps, features)
 
 def CNN1D_model():
     model = Sequential()
-    model.add(Conv1D(filters=8, kernel_size=2, activation='relu', input_shape=(15, 1)))
+    model.add(Conv1D(filters=8, kernel_size=2, activation='relu', input_shape=(17, 1)))
     model.add(Conv1D(filters=8, kernel_size=2, activation='relu'))
     model.add(Dropout(0.5))
     model.add(MaxPooling1D(pool_size=2))
